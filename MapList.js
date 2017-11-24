@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image } from 'react-native';
+import { StyleSheet, Image, View } from 'react-native';
 // Redux
 import { connect, mapStateToProps, mapDispatchToProps } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { fetchMarkers } from "./actions";
-import MapView from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 class MapList extends Component {
   constructor(props) {
@@ -22,23 +22,16 @@ class MapList extends Component {
 
   render() {
     this.state.key = 0;
-    return (
-      <MapView
-        region={this.props.region}
-        style={styles.map}
-        onRegionChange={this.props.onRegionChange}
-      >
-        {this.props.markers ?  this.props.markers.map(marker => {
-          this.state.key += 1;
-        return <MapView.Marker
-          key={this.state.key}
-          coordinate={{latitude: marker.lat, longitude: marker.lon}}
-        >
-        <Image style={{width: 20, height: 20, tintColor: marker.color}} source={require('./assets/marker.png')}></Image>
-        </MapView.Marker>;
-      }) : null}
-      </MapView>
-    );
+    return <View style={styles.container}>
+        <MapView provider={ PROVIDER_GOOGLE } region={this.props.region} style={styles.map} onRegionChange={this.props.onRegionChange}>
+          {this.props.markers ? this.props.markers.map(marker => {
+                this.state.key += 1;
+                return <MapView.Marker key={this.state.key} coordinate={{ latitude: marker.lat, longitude: marker.lon }}>
+                    <Image style={{ width: 20, height: 20, tintColor: marker.color }} source={require("./assets/marker.png")} />
+                  </MapView.Marker>;
+              }) : null}
+        </MapView>
+      </View>;
   }
 }
 
@@ -52,7 +45,11 @@ const styles = StyleSheet.create({
     flex: 1
   },
   map: {
-    flex: 1
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
   }
 });
 
